@@ -1,0 +1,75 @@
+/* --- ESTÉTICA PREMIUM URBANSHOP --- */
+
+/* 1. Cursor Personalizado de Lujo (Apunta con estilo) */
+body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M2 12h2"></path><path d="M20 12h2"></path></svg>') 12 12, auto;
+}
+
+/* 2. Efecto de Brillo Metálico en el Texto (Shimmer) */
+.text-shimmer {
+    background: linear-gradient(90deg, #B8942E 0%, #FDF6E3 50%, #B8942E 100%);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+}
+
+@keyframes shimmer {
+    to { background-position: 200% center; }
+}
+
+/* 3. Tarjetas con efecto Glassmorphism (Vidrio Esmerilado) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    box-shadow: 0 4px 30px rgba(212, 175, 55, 0.05);
+}
+
+/* 4. Animación de Flotación Suave (Para los emojis de productos) */
+.floating-item {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+/* 5. Aura resplandeciente para los botones de compra */
+.btn-aura {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-aura::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(45deg, #D4AF37, #F5DB94, #B8942E, #D4AF37);
+    z-index: -1;
+    border-radius: inherit;
+    background-size: 400%;
+    animation: glowing 15s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.btn-aura:hover::before {
+    opacity: 0.6;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
