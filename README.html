@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanShop | Luxury Streetwear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { 100: '#FDF6E3', 300: '#F5DB94', 400: '#EFCA61', 500: '#D4AF37', 600: '#B8942E' }
+                    },
+                    fontFamily: { sans: ['Space Grotesk', 'sans-serif'] },
+                    boxShadow: { 'gold-sm': '0 2px 10px -3px rgba(212, 175, 55, 0.2)', 'gold-lg': '0 10px 30px -10px rgba(212, 175, 55, 0.3)' }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        .dark ::webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+
+        body { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M2 12h2"></path><path d="M20 12h2"></path></svg>') 12 12, auto; }
+        .gold-glow:hover { box-shadow: 0 0 15px 2px rgba(212, 175, 55, 0.4); }
+
+        .text-shimmer {
+            background: linear-gradient(90deg, #B8942E 0%, #FDF6E3 50%, #B8942E 100%);
+            background-size: 200% auto; color: transparent;
+            -webkit-background-clip: text; background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+        @keyframes shimmer { to { background-position: 200% center; } }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .dark .glass-card { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 30px rgba(212, 175, 55, 0.05); }
+
+        .floating-item { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        .btn-aura { position: relative; z-index: 1; }
+        .btn-aura::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #D4AF37, #F5DB94, #B8942E, #D4AF37);
+            z-index: -1; border-radius: inherit; background-size: 400%;
+            animation: glowing 15s linear infinite; opacity: 0; transition: opacity 0.3s ease-in-out;
+        }
+        .btn-aura:hover::before { opacity: 0.6; }
+        @keyframes glowing { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
+    </style>
+</head>
+<body class="bg-white text-neutral-900 dark:bg-black dark:text-white min-h-screen">
+
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-black/90 backdrop-blur-sm border-b border-neutral-200 dark:border-gold-500/30 p-4 shadow-gold-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-tighter text-shimmer">UrbanShop</h1>
+            <div class="flex items-center gap-4">
+                <span id="usuario" class="text-neutral-600 dark:text-neutral-400 font-medium text-sm"></span>
+                <button onclick="toggleTheme()" class="p-2 rounded-full border border-neutral-200 dark:border-gold-500/30 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all gold-glow"><span id="themeIcon">🌙</span></button>
+                <button onclick="logout()" class="hidden bg-transparent border border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-white px-4 py-1.5 rounded-xl transition-all font-semibold text-sm">Salir</button>
+            </div>
+        </div>
+    </header>
+
+    <section id="loginBox" class="flex flex-col items-center justify-center min-h-[80vh] p-6 relative">
+        <div class="absolute inset-0 opacity-10 dark:opacity-20 flex justify-center items-center overflow-hidden pointer-events-none">
+            <h1 class="text-[30vw] font-black tracking-tighter text-gold-500 select-none">URBAN</h1>
+        </div>
+        <div id="formLogin" class="glass-card p-10 rounded-3xl w-full max-w-md text-center transition-all relative z-10">
+            <h2 class="text-4xl font-extrabold text-neutral-950 dark:text-white mb-2">Bienvenido</h2>
+            <p class="text-gold-600 dark:text-gold-400 font-medium mb-8">Luxury Streetwear</p>
+            <input id="email" placeholder="Correo electrónico" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 mb-4 focus:outline-none focus:border-gold-500">
+            <input id="pass" type="password" placeholder="Contraseña" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 mb-8 focus:outline-none focus:border-gold-500">
+            <button onclick="login()" class="w-full bg-gold-500 text-neutral-950 font-bold rounded-xl px-4 py-4 hover:bg-gold-400 hover:scale-[1.02] transition-all gold-glow text-lg">Entrar con Estilo</button>
+            <p class="mt-8 text-neutral-500 text-sm">¿Nuevo en la zona? <button onclick="toggleAuth('register')" class="text-gold-600 font-bold hover:underline">Regístrate aquí</button></p>
+        </div>
+        <div id="formRegister" class="hidden glass-card p-10 rounded-3xl w-full max-w-md text-center transition-all relative z-10">
+            <h2 class="text-3xl font-extrabold text-neutral-950 dark:text-white mb-2">Únete al Club</h2>
+            <p class="text-gold-600 dark:text-gold-400 font-medium mb-6">Completa tu perfil premium</p>
+            <div class="flex gap-2 mb-4">
+                <input id="regNombre" placeholder="Nombres" class="w-1/2 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 focus:outline-none focus:border-gold-500">
+                <input id="regApellido" placeholder="Apellidos" class="w-1/2 bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 focus:outline-none focus:border-gold-500">
+            </div>
+            <input id="regEdad" type="number" placeholder="Tu Edad" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 mb-4 focus:outline-none focus:border-gold-500">
+            <input id="regEmail" placeholder="Correo electrónico" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 mb-4 focus:outline-none focus:border-gold-500">
+            <input id="regPass" type="password" placeholder="Contraseña" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 mb-6 focus:outline-none focus:border-gold-500">
+            <button onclick="registrar()" class="w-full bg-gold-500 text-neutral-950 font-bold rounded-xl px-4 py-4 hover:bg-gold-400 hover:scale-[1.02] transition-all gold-glow text-lg">Crear Cuenta Elite</button>
+            <p class="mt-6 text-neutral-500 text-sm">¿Ya eres miembro? <button onclick="toggleAuth('login')" class="text-gold-600 font-bold hover:underline">Inicia sesión</button></p>
+        </div>
+        <button onclick="accesoOperador()" class="absolute bottom-6 text-neutral-400 hover:text-gold-500 text-xs font-mono opacity-50 hover:opacity-100 transition-all">🔒 Acceso Operador</button>
+    </section>
+
+    <section id="tienda" class="hidden p-6 max-w-7xl mx-auto my-10">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-12 gap-6 border-b border-neutral-200 dark:border-neutral-900 pb-8">
+            <h2 class="text-5xl font-extrabold tracking-tighter text-neutral-950 dark:text-white">Colección</h2>
+            <button onclick="abrirCheckout()" class="bg-gold-500 text-neutral-950 font-bold rounded-xl px-6 py-3 hover:bg-gold-400 transition-all shadow-lg gold-glow btn-aura">
+                🛒 Carrito (<span id="cartCount" class="font-black">0</span>) - Comprar Ahora
+            </button>
+        </div>
+        <div id="productos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div class="mt-20 pt-10 border-t border-neutral-200 dark:border-neutral-900">
+            <h2 class="text-3xl font-extrabold text-neutral-950 dark:text-white tracking-tight mb-8">Rastreo de Pedidos</h2>
+            <div id="misPedidos" class="grid gap-5"></div>
+        </div>
+    </section>
+
+    <div id="modalCheckout" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-card bg-neutral-50 dark:bg-neutral-950 border border-gold-500/30 rounded-3xl w-full max-w-md p-8 shadow-gold-xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-neutral-950 dark:text-white">Datos de Envío y Pago</h2>
+                <button onclick="cerrarCheckout()" class="text-neutral-500 hover:text-red-500 text-3xl">&times;</button>
+            </div>
+            <input id="chkDir" placeholder="Dirección exacta de entrega" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 mb-4 focus:border-gold-500 focus:outline-none">
+            <input id="chkTel" placeholder="Número de teléfono" type="tel" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 mb-4 focus:border-gold-500 focus:outline-none">
+            <input id="chkRecibe" placeholder="Nombre de quien recibe el paquete" class="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 mb-4 focus:border-gold-500 focus:outline-none">
+            
+            <p class="text-sm text-gold-600 dark:text-gold-400 mb-2 font-bold uppercase">Método de Pago:</p>
+            <select id="chkPago" class="w-full bg-white dark:bg-black text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 mb-8 focus:border-gold-500 focus:outline-none appearance-none">
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="Contra entrega">💵 Pago Contra Entrega</option>
+                <option value="Transferencia">🏦 Transferencia Bancaria</option>
+            </select>
+            <button onclick="procesarCompra()" class="btn-aura w-full bg-gold-500 text-neutral-950 font-bold rounded-xl px-4 py-4 hover:bg-gold-400 hover:scale-[1.02] transition-all text-lg">🚀 Enviar Orden a Bodega</button>
+        </div>
+    </div>
+
+    <section id="adminPanel" class="hidden p-6 max-w-6xl mx-auto my-10">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b border-neutral-200 dark:border-neutral-900 pb-8">
+            <div>
+                <h2 class="text-5xl font-extrabold text-neutral-950 dark:text-white tracking-tighter mb-2 text-shimmer">Panel Maestro</h2>
+                <div id="stats" class="text-gold-600 bg-neutral-100 dark:bg-neutral-950 inline-flex px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 text-sm"></div>
+            </div>
+            <button onclick="limpiarTodo()" class="border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all">🗑️ Reiniciar Base de Datos</button>
+        </div>
+        <div id="listaPedidos" class="grid gap-8"></div>
+    </section>
+
+    <div id="detallePedido" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-card bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-gold-500/30 rounded-3xl w-full max-w-2xl h-[85vh] flex flex-col shadow-gold-xl">
+            <div class="p-6 border-b border-neutral-200 dark:border-neutral-900 flex justify-between items-start bg-neutral-50 dark:bg-black rounded-t-3xl">
+                <div><h2 class="text-2xl font-bold mb-1">Soporte Concierge</h2><div id="pedidoInfo" class="text-sm text-neutral-500 font-mono"></div></div>
+                <button onclick="cerrarDetalle()" class="text-neutral-400 hover:text-red-500 text-4xl">&times;</button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 bg-white dark:bg-neutral-950" id="chat"></div>
+            
+            <div class="p-4 border-t border-neutral-200 dark:border-neutral-900 bg-neutral-50 dark:bg-black rounded-b-3xl flex gap-3 items-center">
+                <label class="cursor-pointer bg-neutral-200 dark:bg-neutral-800 p-3 rounded-xl hover:bg-gold-500 hover:text-black transition-all flex items-center justify-center shadow-sm">
+                    <input type="file" accept="image/*" class="hidden" id="imgInput" onchange="subirImagen(event)">
+                    📷
+                </label>
+                <input id="msg" placeholder="Escribe un mensaje..." class="flex-1 bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 focus:outline-none focus:border-gold-500">
+                <button onclick="enviarMensaje()" class="bg-gold-500 text-neutral-950 font-bold rounded-xl px-7 py-2 hover:bg-gold-400 gold-glow">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/50259430418" target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:scale-110 hover:shadow-[#25D366]/50 transition-all z-40 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+    </a>
+
+    <script>
+        function applyTheme(theme) { document.documentElement.classList.toggle('dark', theme === 'dark'); document.getElementById('themeIcon').innerText = theme === 'dark' ? '🌙' : '☀️'; }
+        function toggleTheme() { const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark'; localStorage.setItem('urbanTheme', newTheme); applyTheme(newTheme); }
+        applyTheme(localStorage.getItem('urbanTheme') || 'dark');
+
+        function getDB(key) { return JSON.parse(localStorage.getItem(key)) || []; }
+        function setDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+        let productos = getDB("productos").length ? getDB("productos") : [
+            {id:1, nombre:"Audífonos Gold", precio:150, stock:5, emoji:"🎧"}, {id:2, nombre:"Sneakers Velvet", precio:450, stock:3, emoji:"👟"}, {id:3, nombre:"Gorra Classic", precio:85, stock:10, emoji:"🧢"}
+        ];
+        if(!localStorage.getItem("productos")) setDB("productos", productos);
+
+        let usuarios = getDB("usuarios").length ? getDB("usuarios") : [{email:"admin@urbanshop.com", pass:"1234", rol:"admin", nombre:"Maestro"}];
+        if(!localStorage.getItem("usuarios")) setDB("usuarios", usuarios);
+
+        let pedidos = getDB("pedidos"); let mensajes = getDB("mensajes");
+        let carrito = []; let actual = null; let pedidoActual = null;
+
+        function limpiarTodo() { if(confirm("⚠️ ¿Resetear TODA la base de datos? Se borrará todo.")) { localStorage.clear(); location.reload(); } }
+        function eliminarPedido(id) { if(confirm("¿Estás seguro de archivar y limpiar este pedido entregado de tu pantalla?")) { pedidos = pedidos.filter(p => p.id !== id); setDB("pedidos", pedidos); cargarPedidosAdmin(); } }
+        function toggleAuth(type) { document.getElementById('formLogin').classList.toggle('hidden', type === 'register'); document.getElementById('formRegister').classList.toggle('hidden', type === 'login'); }
+
+        function registrar() {
+            let nom = document.getElementById("regNombre").value.trim(), ape = document.getElementById("regApellido").value.trim(), edad = parseInt(document.getElementById("regEdad").value);
+            let email = document.getElementById("regEmail").value.trim(), pass = document.getElementById("regPass").value.trim();
+            if(!nom || !ape || !edad || !email || !pass) return alert("Por favor, rellena todos los campos.");
+            if(edad < 15) return alert("Debes tener al menos 15 años para registrarte en UrbanShop.");
+            if(usuarios.find(u => u.email === email)) return alert("Este correo ya está registrado.");
+            usuarios.push({ email, pass, rol: "user", nombre: nom, apellido: ape, edad: edad });
+            setDB("usuarios", usuarios); alert("¡Bienvenido al Club! Inicia sesión."); toggleAuth('login');
+        }
+
+        function login(){
+            let email = document.getElementById("email").value.trim(), pass = document.getElementById("pass").value.trim();
+            let user = usuarios.find(u => u.email === email && u.pass === pass);
+            if(!user) return alert("Credenciales incorrectas."); actual = user; iniciarInterfaz();
+        }
+
+        function accesoOperador() {
+            let clave = prompt("Clave de Operador Maestro:");
+            if(clave === "URBAN777") { actual = { email: "Operador Maestro", rol: "admin", nombre:"Admin" }; iniciarInterfaz(); }
+        }
+
+        function iniciarInterfaz() {
+            document.getElementById("loginBox").classList.add("hidden"); document.querySelector('header button[onclick="logout()"]').classList.remove('hidden');
+            if(actual.rol === "admin") {
+                document.getElementById("usuario").innerHTML = `⚡ <span class="text-gold-500 font-bold">Maestro</span>`;
+                document.getElementById("adminPanel").classList.remove('hidden'); cargarPedidosAdmin();
+            } else {
+                document.getElementById("usuario").innerText = actual.nombre ? `${actual.nombre} ${actual.apellido}` : actual.email;
+                document.getElementById("tienda").classList.remove('hidden'); cargarProductos(); misPedidos();
+            }
+        }
+        function logout(){ location.reload(); }
+
+        function cargarProductos(){
+            let html = ""; productos.forEach(p => {
+                html += `<div class="glass-card bg-neutral-50 dark:bg-neutral-950 rounded-3xl p-6 flex flex-col items-center hover:-translate-y-2 transition-all">
+                    <div class="w-full aspect-square bg-white dark:bg-black rounded-2xl mb-6 flex items-center justify-center border border-neutral-100 dark:border-neutral-900"><span class="text-7xl floating-item">${p.emoji}</span></div>
+                    <h3 class="text-xl font-bold mb-1">${p.nombre}</h3><p class="text-gold-500 font-black text-3xl mb-5">Q${p.precio}</p>
+                    <button onclick="agregar(${p.id})" class="btn-aura w-full border-2 border-gold-500 text-gold-500 hover:bg-gold-500 hover:text-black font-bold rounded-xl px-4 py-3 ${p.stock<=0?'opacity-40':''}">${p.stock>0?'Añadir':'Agotado'}</button>
+                </div>`
+            });
+            document.getElementById("productos").innerHTML = html;
+        }
+
+        function agregar(id){
+            let p = productos.find(p => p.id == id); if(p.stock <= 0) return;
+            carrito.push(p); p.stock--; setDB("productos", productos);
+            document.getElementById("cartCount").innerText = carrito.length; cargarProductos();
+        }
+
+        function abrirCheckout(){ if(carrito.length === 0) return alert("Tu carrito está vacío."); document.getElementById("modalCheckout").classList.remove("hidden"); }
+        function cerrarCheckout(){ document.getElementById("modalCheckout").classList.add("hidden"); }
+
+        function procesarCompra(){
+            let dir = document.getElementById("chkDir").value.trim(), tel = document.getElementById("chkTel").value.trim(), recibe = document.getElementById("chkRecibe").value.trim(), pago = document.getElementById("chkPago").value;
+            if(!dir || !tel || !recibe || !pago) return alert("Llena todos los datos de envío y elige tu método de pago.");
+            let order = "URBAN-" + Date.now().toString().slice(-6);
+            pedidos.push({ id: order, usuario: actual.email, nombreCliente: actual.nombre + " " + actual.apellido, edadCliente: actual.edad, direccion: dir, telefono: tel, recibe: recibe, metodoPago: pago, productos: [...carrito], estado: "Recibido" });
+            setDB("pedidos", pedidos); carrito = []; document.getElementById("cartCount").innerText = "0"; cerrarCheckout(); misPedidos(); alert(`¡Orden enviada! Seguimiento: ${order}`);
+        }
+
+        function misPedidos(){
+            let html = ""; let misPeds = pedidos.filter(p => p.usuario == actual.email);
+            if(misPeds.length === 0) html = `<p class='text-neutral-500 p-6 text-center'>Aún no tienes pedidos.</p>`;
+            misPeds.reverse().forEach(p => {
+                let color = "text-gold-500"; let icono = "📥";
+                if(p.estado === "En bodega") { color = "text-orange-400"; icono = "📦"; }
+                if(p.estado === "En camino") { color = "text-blue-400"; icono = "🚚"; }
+                if(p.estado === "Entregado") { color = "text-green-500"; icono = "✅"; }
+                html += `<div class="glass-card rounded-2xl p-5 flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-4"><span class="text-3xl">${icono}</span><div><span class="font-bold text-lg">${p.id}</span> <span class="${color} font-bold text-sm ml-2 bg-black/50 px-2 py-1 rounded">${p.estado}</span></div></div>
+                    <button onclick="verPedido('${p.id}')" class="bg-neutral-800 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-gold-500 hover:text-black transition-all">Ver / Chat</button>
+                </div>`
+            });
+            document.getElementById("misPedidos").innerHTML = html;
+        }
+
+        function cargarPedidosAdmin(){
+            let html = ""; document.getElementById("stats").innerHTML = `💎 ${pedidos.length} Órdenes Activas`;
+            if(pedidos.length === 0) html = `<p class="text-center text-neutral-500 p-10">No hay órdenes pendientes.</p>`;
+            [...pedidos].reverse().forEach(p => {
+                let items = p.productos.map(prod => `<li>${prod.emoji} ${prod.nombre}</li>`).join('');
+                let msjs = mensajes.filter(m => m.pedido === p.id);
+                let msjInfo = msjs.length > 0 ? `<span class="bg-red-500 text-white px-2 py-0.5 rounded text-xs mr-2">NUEVO MSG</span>` : "Sin mensajes";
+                let botonArchivar = p.estado === 'Entregado' ? `<button onclick="eliminarPedido('${p.id}')" class="ml-4 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded-lg text-sm font-bold transition-all">🗑️ Archivar Entregado</button>` : '';
+
+                html += `<div class="glass-card rounded-3xl p-8 mb-6 border border-gold-500/20 shadow-lg">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-neutral-800 pb-4 mb-4 gap-4">
+                        <span class="text-gold-500 font-black text-2xl">${p.id}</span>
+                        <div class="flex items-center w-full md:w-auto">
+                            <select onchange="cambiarEstado('${p.id}',this.value)" class="bg-black text-white font-bold rounded-lg p-2 border border-gold-500/50 flex-1 md:flex-none">
+                                <option value="Recibido" ${p.estado == 'Recibido' ? 'selected' : ''}>📥 Recibido</option><option value="En bodega" ${p.estado == 'En bodega' ? 'selected' : ''}>📦 En bodega</option><option value="En camino" ${p.estado == 'En camino' ? 'selected' : ''}>🚚 En camino</option><option value="Entregado" ${p.estado == 'Entregado' ? 'selected' : ''}>✅ Entregado</option>
+                            </select>${botonArchivar}
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-black/40 border border-neutral-800 p-4 rounded-2xl"><p class="text-gold-400 text-xs font-bold uppercase mb-2">👤 Comprador</p><p class="text-sm"><span class="text-neutral-400">Nombre:</span> <b class="text-white">${p.nombreCliente||'Antiguo'}</b></p><p class="text-sm"><span class="text-neutral-400">Cuenta:</span> <b class="text-white">${p.usuario}</b></p></div>
+                        <div class="bg-black/40 border border-neutral-800 p-4 rounded-2xl"><p class="text-gold-400 text-xs font-bold uppercase mb-2">📍 Envío y Cobro</p><p class="text-sm"><span class="text-neutral-400">Recibe:</span> <b class="text-white">${p.recibe || 'N/A'}</b></p><p class="text-sm"><span class="text-neutral-400">Tel:</span> <b class="text-white">${p.telefono || 'N/A'}</b></p><p class="text-sm mt-2 p-1 bg-gold-500/20 rounded border border-gold-500/30 inline-block"><span class="text-gold-400 font-bold">Cobrar por:</span> <b class="text-white">${p.metodoPago || 'No definido'}</b></p></div>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/60 p-3 rounded-xl"><div class="text-sm">${msjInfo}</div><button onclick="verPedido('${p.id}')" class="bg-gold-500 text-black px-6 py-2 rounded-xl font-bold hover:bg-gold-400 btn-aura">Abrir Chat</button></div>
+                </div>`
+            });
+            document.getElementById("listaPedidos").innerHTML = html;
+        }
+
+        function cambiarEstado(id, est){ let p = pedidos.find(p => p.id == id); if(p) p.estado = est; setDB("pedidos", pedidos); cargarPedidosAdmin(); }
+        function verPedido(id){ pedidoActual = id; document.getElementById("detallePedido").classList.remove("hidden"); let p = pedidos.find(p => p.id == id); if(!p) return; document.getElementById("pedidoInfo").innerText = p.id; cargarChat(); }
+        function cerrarDetalle(){ document.getElementById("detallePedido").classList.add("hidden"); }
+        
+        // --- SUBIR IMÁGENES AL CHAT ---
+        function subirImagen(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) return alert("La imagen es muy pesada. Máximo 2MB para no saturar la memoria local.");
+
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let base64Img = e.target.result;
+                mensajes.push({ pedido: pedidoActual, usuario: actual.email, texto: "", imagen: base64Img }); 
+                setDB("mensajes", mensajes);
+                cargarChat(); 
+                if(actual.rol === "admin") cargarPedidosAdmin();
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ""; // Resetea el botón
+        }
+
+        function enviarMensaje(){
+            let inp = document.getElementById("msg"); let txt = inp.value.trim(); if(!txt) return;
+            mensajes.push({ pedido: pedidoActual, usuario: actual.email, texto: txt }); setDB("mensajes", mensajes);
+            inp.value = ""; cargarChat(); if(actual.rol === "admin") cargarPedidosAdmin();
+        }
+
+        function cargarChat(){
+            let html = ""; let msgs = mensajes.filter(m => m.pedido == pedidoActual);
+            msgs.forEach(m => {
+                let esMio = m.usuario === actual.email;
+                let bg = esMio ? "bg-gold-500 text-black rounded-tr-none" : "bg-neutral-800 text-white rounded-tl-none";
+                
+                let contenido = "";
+                if (m.texto) contenido += `<div class="max-w-[85%] px-5 py-3 rounded-2xl ${bg} text-sm">${m.texto}</div>`;
+                if (m.imagen) contenido += `<img src="${m.imagen}" class="max-w-[85%] rounded-2xl mt-1 border-2 ${esMio ? 'border-gold-500' : 'border-neutral-800'} shadow-lg" style="max-height: 250px; object-fit: cover;">`;
+
+                html += `<div class="flex flex-col ${esMio?'items-end':'items-start'} mb-4">
+                    <span class="text-xs text-neutral-500 mb-1">${m.usuario === "Operador Maestro" ? "Soporte" : m.usuario}</span>
+                    ${contenido}
+                </div>`;
+            });
+            let cBox = document.getElementById("chat"); cBox.innerHTML = html; setTimeout(()=> cBox.scrollTop = cBox.scrollHeight, 50);
+        }
+        document.getElementById("msg").addEventListener("keypress", e => { if(e.key==="Enter"){e.preventDefault();enviarMensaje();} });
+
+        window.addEventListener('storage', e => {
+            if(e.key === 'pedidos' || e.key === 'mensajes') {
+                pedidos = getDB('pedidos'); mensajes = getDB('mensajes');
+                if(actual) { if(actual.rol === 'admin') cargarPedidosAdmin(); else misPedidos(); if(!document.getElementById('detallePedido').classList.contains('hidden')) cargarChat(); }
+            }
+        });
+    </script>
+</body>
+</html>
